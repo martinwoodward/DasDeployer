@@ -6,6 +6,8 @@ More details coming soon.
 
 ## Component List
  - Gun Metal Grey Aluminium Flight Case (340 x 240 x 120mm) [[UK]](https://amzn.to/2v9PrQS)
+ - Raspberry Pi 3 Model B+ [[UK]](https://amzn.to/2KLshuM)
+ - SD card containing [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) [[UK]](https://amzn.to/2UqUDKE)
  - 3mm Black Carbon Fibre Effect ABS Sheet (420mm x 297mm / A3) [[UK]](https://amzn.to/2XfYHPp)
  - 4 Inch / 100mm Big Dome Illuminated Push Button with Microswitch (White) [[UK]](https://amzn.to/2KG42Ox)
  - iHaospace 20x4 Blue Screen LCD Module /w IIC/I2C Serial Interface Adapter [[UK]](https://amzn.to/2V8PiM6)
@@ -20,5 +22,13 @@ More details coming soon.
  - Terminal Block Breakout Module for Raspberry Pi [[UK]](https://amzn.to/2VUm4Ox)
  - N-Channel Power MOSFET (8 needed from pack of 10) [[UK]](https://amzn.to/2KHKY2q)
  - 4 Channel IIC I2C Logic Level Converter [[UK]](https://amzn.to/2v5Qamd)
+ - Assorting wiring, breadboard, spade connectors, Torx security screws, scrap wood etc
+ 
+## Equipment
+ - Dremel
+ - Soldering Iron
+ - Hot melt glue gun
+ - Screwdrivers
+ - Drill, bits (including hole cutting accessories)
 
 
