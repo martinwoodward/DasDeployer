@@ -10,7 +10,7 @@ More details coming soon.
  - SD card containing [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) [[UK]](https://amzn.to/2UqUDKE)
  - 3mm Black Carbon Fibre Effect ABS Sheet (420mm x 297mm / A3) [[UK]](https://amzn.to/2XfYHPp)
  - 4 Inch / 100mm Big Dome Illuminated Push Button with Microswitch (White) [[UK]](https://amzn.to/2KG42Ox)
- - iHaospace 20x4 Blue Screen LCD Module /w IIC/I2C Serial Interface Adapter [[UK]](https://amzn.to/2V8PiM6)
+ - HD44780 20x4 Blue Screen LCD Module with I2C Serial Interface Adapter [[UK]](https://amzn.to/2V8PiM6)
  - Illuminated Square Momentary Push Buttons (4 needed from pack of 5) [[UK]](https://amzn.to/2KJMPEa)
  - 112mm 32 WS2812B 5050 RGB LED Ring (Adafruit Neopixel compatible) [[UK]](https://amzn.to/2V5ClD0)
  - 32mm 8 WS2812B 5050 RGB LED Ring (Adafruit Neopixel compatible) [[UK]](https://amzn.to/2KKgZqD)
