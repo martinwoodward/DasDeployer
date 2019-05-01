@@ -20,15 +20,39 @@ More details coming soon.
  - Dual USB3.0 Square Flush Mount [[UK]](https://amzn.to/2v5Q4el)
  - 5V/12V/24V Switching Power Supply for Arcade Machine [[UK]](https://amzn.to/2VPowpo)
  - Terminal Block Breakout Module for Raspberry Pi [[UK]](https://amzn.to/2VUm4Ox)
- - N-Channel Power MOSFET (8 needed from pack of 10) [[UK]](https://amzn.to/2KHKY2q)
- - 4 Channel IIC I2C Logic Level Converter [[UK]](https://amzn.to/2v5Qamd)
- - Assorting wiring, breadboard, spade connectors, Torx security screws, scrap wood etc
+ - N-Channel Power MOSFET (4 needed) [[UK]](https://amzn.to/2KHKY2q)
+ - 8-Channel IIC I2C Logic Level Converter [[UK]](https://amzn.to/2VEK0IH)
+ - Assorting wiring, breadboard, spade connectors, Torx security screws, PCB spacers, scrap wood etc
  
 ## Equipment
  - Dremel
  - Soldering Iron
  - Hot melt glue gun
  - Screwdrivers
+ - Superglue
  - Drill, bits (including hole cutting accessories)
 
+## RPi GPIO Assignment
+The following lists the GPIO port assignments for the Raspberry Pi.
+
+| RPi   | Description   |
+| ----- | ------------- |
+| IO17  | Main Button Switch |
+| IO21  | RGB Data In |
+| SDA   | LCD SDA |
+| SCL   | LCD SCL |
+| IO4   | Red Button LED |
+| IO6   | Red Button Switch |
+| IO27  | Orange Button LED |
+| IO5   | Orange Button Switch |
+| IO13  | Green Button LED |
+| IO25  | Green Button Switch |
+| IO26  | Blue Button LED |
+| IO24  | Blue Button Switch |
+| IO12  | Dev Toggle LED |
+| IO16  | Dev Toggle Switch |
+| IO20  | Stage Toggle LED |
+| IO23  | Stage Toggle Switch |
+| IO19  | Prod Toggle LED|
+| IO22  | Prod Toggle Switch |
 
