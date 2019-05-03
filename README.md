@@ -39,8 +39,8 @@ The following lists the GPIO port assignments for the Raspberry Pi.
 | ----- | ------------- |
 | IO17  | Main Button Switch |
 | IO21  | RGB Data In |
-| SDA   | LCD SDA |
-| SCL   | LCD SCL |
+| IO2 (SDA)   | LCD SDA |
+| IO3 (SCL)   | LCD SCL |
 | IO4   | Red Button LED |
 | IO6   | Red Button Switch |
 | IO27  | Orange Button LED |
