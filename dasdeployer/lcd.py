@@ -11,6 +11,9 @@ Implementation Notes
 Magic numbers cribbed from lcd_i2c.py written by Matt Hawkins 
 <https://www.raspberrypi-spy.co.uk/2015/05/using-an-i2c-enabled-lcd-screen-with-the-raspberry-pi/>
 
+For an explaination of the magic numbers and character code lookup table see SparkFun
+<https://www.sparkfun.com/datasheets/LCD/HD44780.pdf>
+
 Code inspired by Adafruit's excellent CircuitPython CharLCD library
 <https://github.com/adafruit/Adafruit_CircuitPython_CharLCD/blob/master/adafruit_character_lcd/character_lcd.py>
 
