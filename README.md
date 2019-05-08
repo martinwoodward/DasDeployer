@@ -56,3 +56,55 @@ The following lists the GPIO port assignments for the Raspberry Pi.
 | IO19  | Prod Toggle LED|
 | IO22  | Prod Toggle Switch |
 
+## Hardware Build
+TODO
+
+## Software Installation
+1. Download the latest Raspian image to a Micro-SD Card, create a file in the root of the image called 'ssh' to enable ssh access in a headless environment. SSH to server and do apt-get update/upgrade etc
+2. Change the password for the default pi user, everything else assumes you are running as that user.
+3. Enable i2c using raspi-config
+4. Install pre-requisites (TODO: list these but ideally script out this part)
+5. git clone this repo into the /home/pi directory.
+
+Installing the service
+We want the `dasdeployer` service to run after the network comes up on the Raspberry Pi.  Therefore we use systemd to allow us to do that.  I'm an old fashioned SysV init.d type of person and systemd was new to me therefore the following resources were very helpful:
+
+ - https://raspberrypi.stackexchange.com/a/79033
+ - https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units
+ - https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files
+
+Basically I entered the following commands:
+
+```
+chmod a+rx /home/pi/DasDeployer/scripts/dasdeployer.sh
+chmod a+rx /home/pi/DasDeployer/dasdeployer/dasdeployer.py
+sudo systemctl edit --force --full dasdeployer.service
+```
+
+and then set the service configuration to be as follows
+
+```
+[Unit]
+Description=Das Deployer
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory=/home/pi/DasDeployer/scripts
+ExecStart=/home/pi/DasDeployer/scripts/dasdeployer.sh start
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then I enabled and started the service, followed by a quick reboot to make sure everything worked correctly on initial start.
+
+```
+sudo systemctl enable dasdeployer.service
+sudo systemctl start dasdeployer.service
+sudo shutdown -r now
+```
+
+
