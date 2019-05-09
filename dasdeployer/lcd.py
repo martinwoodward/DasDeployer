@@ -118,7 +118,9 @@ class LCD_HD44780_I2C:
                 self.printLine(line, row)
                 row += 1
                 col = 0
-                line = ""
+                if character == '\n':
+                    character = ''
+                line = character
             else:
                 # Add character to current line
                 line += character
