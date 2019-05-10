@@ -21,7 +21,7 @@ toggleLight = LEDBoard(dev=12, stage=20, prod=19)
 toggle = ButtonBoard(dev=16, stage=23, prod=22, pull_up=False)
 leds = LEDBoard(switchLight, toggleLight)
 lcd = LCD_HD44780_I2C()
-rgbmatrix = RGBButton()
+rgbmatrix = RGBButton(fps=25)
 bigButton = Button(17)
 
 ## Nifty get_ip function from Jamieson Becker https://stackoverflow.com/a/28950776
@@ -77,7 +77,8 @@ rgbmatrix.off()
 
 lcd.message = TITLE
 
-switch.orange.when_pressed = rgbmatrix.pulse
+switch.orange.when_pressed = rgbmatrix.pulseButton
+switch.green.when_pressed = rgbmatrix.pulseRing
 switch.red.when_pressed = rgbmatrix.off
 
 
