@@ -71,16 +71,19 @@ switch.red.when_held = run_diagnostics
 # Quick init sequence to show all is well
 lcd.message = TITLE + "\n\n\n" + get_ip()
 leds.blink(0.5,0.5,0,0,2,True)
-rgbmatrix.fill(Color.WHITE)
-sleep(2)
+rgbmatrix.pulseButton(Color.RED, 1)
+rgbmatrix.unicornRing(25)
+sleep(3)
 rgbmatrix.off()
 
 lcd.message = TITLE
 
 switch.orange.when_pressed = rgbmatrix.pulseButton
-switch.green.when_pressed = rgbmatrix.pulseRing
+switch.orange.when_released = rgbmatrix.stopButton
+
+switch.green.when_pressed = rgbmatrix.unicornRing
+switch.green.when_released = rgbmatrix.stopRing
+
 switch.red.when_pressed = rgbmatrix.off
-
-
 
 pause()

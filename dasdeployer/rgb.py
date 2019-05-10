@@ -46,6 +46,7 @@ class AnimationType(Enum):
     FLASH = 1
     PULSE = 2
     CHASE = 3
+    UNICORN = 4
 
 class RGBButton():
     def __init__(self, brightness=1, ring_brightness=0.2, fps=25):
@@ -86,9 +87,37 @@ class RGBButton():
         self._animate_start()
         self._animate_thread.button_animation = { "type": AnimationType.PULSE, "color": color, "duration": duration }
 
+    def flashButton(self, color=Color.WHITE, duration=1):
+        self._animate_start()
+        self._animate_thread.button_animation = { "type": AnimationType.FLASH, "color": color, "duration": duration }
+
+    def stopButton(self):
+        if self._animate_thread.ring_animation is None:
+            self._animate_stop()
+        else:
+            self._animate_thread.button_animation = None
+        self.pixels[_RING_PIXELS:_NUM_PIXELS] = [Color.OFF] * _BUTTON_PIXELS
+        self.pixels.show()
+
+    def unicornRing(self, duration=25):
+        self._animate_start()
+        self._animate_thread.ring_animation = { "type": AnimationType.UNICORN, "color": Color.OFF, "duration": duration }
+
     def pulseRing(self, color=(0,0,100), duration=2.5):
         self._animate_start()
         self._animate_thread.ring_animation = { "type": AnimationType.PULSE, "color": color, "duration": duration }
+
+    def flashRing(self, color=(0,0,100), duration=2.5):
+        self._animate_start()
+        self._animate_thread.ring_animation = { "type": AnimationType.FLASH, "color": color, "duration": duration }
+
+    def stopRing(self):
+        if self._animate_thread.button_animation is None:
+            self._animate_stop()
+        else:
+            self._animate_thread.ring_animation = None
+        self.pixels[0:_RING_PIXELS] = [Color.OFF] * _RING_PIXELS
+        self.pixels.show()
 
 
 class AnimateThread(threading.Thread):
@@ -180,6 +209,33 @@ class AnimateThread(threading.Thread):
         
         return pixels
 
+    def wheel(self, pos):
+        # Taken from the Adafruit Neopixel example code.
+        # Input a value 0 to 255 to get a color value.
+        # The colours are a transition r - g - b - back to r.
+        if pos < 0 or pos > 255:
+            r = g = b = 0
+        elif pos < 85:
+            r = int(pos * 3)
+            g = int(255 - pos*3)
+            b = 0
+        elif pos < 170:
+            pos -= 85
+            r = int(255 - pos*3)
+            g = 0
+            b = int(pos*3)
+        else:
+            pos -= 170
+            r = 0
+            g = int(pos*3)
+            b = int(255 - pos*3)
+
+        # As this is used for the ring, turn down the brightness
+        r = int(r * self.ring_brightness)
+        g = int(g * self.ring_brightness)
+        b = int(b * self.ring_brightness)
+        
+        return (r, g, b)
 
     def _animate(self, num_pixels, animation_type, frame, color, duration):    
 
@@ -212,9 +268,16 @@ class AnimateThread(threading.Thread):
             # Max length of animation is the duration
             if frame > (duration/self.delay):
                 frame = 0
+
+        elif animation_type == AnimationType.UNICORN:
+            
+            pixels = [Color.OFF] * num_pixels
+            for i in range(num_pixels):
+                pixel_index = (i * 256 // num_pixels) + frame
+                pixels[i] = self.wheel(pixel_index & 255)
+            frame += 1 + int(25/duration)
+            # Max length of animation is 255
+            if frame > 255:
+                frame = 0
         
         return (frame, pixels)
-
-    
-
-    
