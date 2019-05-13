@@ -21,7 +21,7 @@ toggleLight = LEDBoard(dev=12, stage=20, prod=19)
 toggle = ButtonBoard(dev=16, stage=23, prod=22, pull_up=False)
 leds = LEDBoard(switchLight, toggleLight)
 lcd = LCD_HD44780_I2C()
-rgbmatrix = RGBButton(fps=25)
+rgbmatrix = RGBButton()
 bigButton = Button(17)
 
 ## Nifty get_ip function from Jamieson Becker https://stackoverflow.com/a/28950776
@@ -41,7 +41,6 @@ def shutdown():
     lcd.message = "Switching off..."
     sleep(3)
     leds.off()
-    lcd.clear(False)
     check_call(['sudo', 'poweroff'])
 
 def reboot():
@@ -61,6 +60,7 @@ def run_diagnostics():
     switch.red.when_pressed = shutdown
     switch.orange.when_pressed = reboot
     switch.blue.wait_for_press()
+    switch.orange.when_pressed = None
     switch.red.when_pressed = None
     switch.red.when_held = run_diagnostics
     lcd.message = TITLE
@@ -79,11 +79,10 @@ rgbmatrix.off()
 lcd.message = TITLE
 
 switch.orange.when_pressed = rgbmatrix.pulseButton
-switch.orange.when_released = rgbmatrix.stopButton
+switch.green.when_pressed = rgbmatrix.chaseRing
 
-switch.green.when_pressed = rgbmatrix.unicornRing
-switch.green.when_released = rgbmatrix.stopRing
-
-switch.red.when_pressed = rgbmatrix.off
+switch.blue.when_pressed = rgbmatrix.stopRing
+switch.red.when_pressed = rgbmatrix.stopButton
+switch.blue.when_held = rgbmatrix.off
 
 pause()

@@ -49,7 +49,7 @@ class AnimationType(Enum):
     UNICORN = 4
 
 class RGBButton():
-    def __init__(self, brightness=1, ring_brightness=0.2, fps=25):
+    def __init__(self, brightness=1, ring_brightness=0.2, fps=32):
         assert 0 <= brightness <= 1
         assert 0 <= ring_brightness <= 1
         assert fps > 0
@@ -106,6 +106,10 @@ class RGBButton():
     def pulseRing(self, color=(0,0,100), duration=2.5):
         self._animate_start()
         self._animate_thread.ring_animation = { "type": AnimationType.PULSE, "color": color, "duration": duration }
+
+    def chaseRing(self, color=(0,0,255), duration=5):
+        self._animate_start()
+        self._animate_thread.ring_animation = { "type": AnimationType.CHASE, "color": color, "duration": duration }
 
     def flashRing(self, color=(0,0,100), duration=2.5):
         self._animate_start()
@@ -279,5 +283,30 @@ class AnimateThread(threading.Thread):
             # Max length of animation is 255
             if frame > 255:
                 frame = 0
-        
+
+        elif animation_type == AnimationType.CHASE:
+            # Define the brightness sequence for pattern
+            min_brightness = self.ring_brightness / 50
+            # Add a leading brighter pixel
+            pattern = [self.ring_brightness - ((self.ring_brightness - min_brightness) / 10)]
+            # Have a bunch of full brightness pixels
+            pattern += ([self.ring_brightness] * int(num_pixels / 6))
+            for i in range(int(num_pixels / 3)):
+                # linear drop in brightness to min brightness
+                pattern.append(self.ring_brightness - (((self.ring_brightness - min_brightness) / int(num_pixels / 3)) * i))
+            # rest of the pixels at min brightness
+            pattern += [min_brightness] * (num_pixels-len(pattern))
+            
+            # Apply brightness to pixels & reverse the order
+            pixels = []
+            for pb in reversed(pattern):
+                pixel = tuple(int(c*pb) for c in color)
+                pixels.append(pixel)
+            
+            # Rotate the pixels clockwise
+            pixels = (pixels[-frame:] + pixels[:-frame])
+            frame += 1 
+            if frame >= num_pixels:
+                frame = 0
+
         return (frame, pixels)
