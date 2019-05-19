@@ -1,0 +1,15 @@
+# Configuration settings
+# Update with the PAT for the user DasDeployer is acting on behalf of
+
+# The Azure DevOps Organization to connect to
+ORG_URL = "https://dev.azure.com/azuredevopsexamples"
+
+# The PAT for a user that has permission to approve releases
+PAT = "---INSERT-YOUR-PAT-HERE-----"
+
+# The project were the build and release definitions live
+PROJECT = "website"
+
+# The build definition ID that should be checked for build status
+BUILD_PIPELINE_ID = 23
+
