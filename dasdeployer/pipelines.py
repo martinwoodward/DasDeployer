@@ -8,8 +8,7 @@ from msrest.authentication import BasicAuthentication
 import pprint
 
 # Create a connection to the org
-credentials = BasicAuthentication('', PAT)
-connection = Connection(base_url=ORG_URL, creds=credentials)
+connection = Connection(base_url=ORG_URL, creds=BasicAuthentication('', PAT))
 
 # Get the build status
 build_client = connection.clients.get_build_client()
