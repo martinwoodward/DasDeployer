@@ -24,7 +24,7 @@ else:
 # Look for release approvals
 rm_client = connection.clients.get_release_client()
 
-approvals = rm_client.get_approvals(PROJECT)
+approvals = rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")
 
 for a in approvals:
     print(a.release.name + " awaiting approval to " + a.release_environment.name)
