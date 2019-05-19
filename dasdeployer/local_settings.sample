@@ -1,5 +1,6 @@
 # Configuration settings
 # Update with the PAT for the user DasDeployer is acting on behalf of
+# And copy to local_settings.py
 
 # The Azure DevOps Organization to connect to
 ORG_URL = "https://dev.azure.com/azuredevopsexamples"
