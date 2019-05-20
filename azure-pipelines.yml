@@ -19,10 +19,10 @@ steps:
     versionSpec: '$(python.version)'
   displayName: 'Use Python $(python.version)'
 
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
+#- script: |
+#    python -m pip install --upgrade pip
+#    pip install -r requirements.txt
+#  displayName: 'Install dependencies'
 
 - script: |
     for SCRIPT in $(find . -type f -name \*\.sh | xargs); do
