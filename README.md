@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/martin/DasDeployer/_apis/build/status/martinwoodward.DasDeployer?branchName=master&label=DasBuild)](https://dev.azure.com/martin/DasDeployer/_build/latest?definitionId=43&branchName=master)
+
 # DasDeployer
 
 Raspberry Pi powered manual release approval gate for Azure Pipelines. Mit viele blinkenlighten.
