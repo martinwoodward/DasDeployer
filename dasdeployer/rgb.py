@@ -47,6 +47,7 @@ class AnimationType(Enum):
     PULSE = 2
     CHASE = 3
     UNICORN = 4
+    FILL = 5
 
 class RGBButton():
     def __init__(self, brightness=1, ring_brightness=0.2, fps=32):
@@ -71,6 +72,18 @@ class RGBButton():
         ring_color = tuple(int(c*self.ring_brightness) for c in color)
         self.pixels[0:_RING_PIXELS] = [ring_color] * _RING_PIXELS
         self.pixels[_RING_PIXELS:_NUM_PIXELS] = [color] * _BUTTON_PIXELS
+        self.pixels.show()
+
+    def fillButton(self, color):
+        self._animate_stop()
+        self.pixels[_RING_PIXELS:_NUM_PIXELS] = [color] * _BUTTON_PIXELS
+        self.pixels.show()
+
+    def fillRing(self, color):
+        self._animate_stop()
+        # Ring appears brighter to the eye than the button so reduce intensity of the LEDS
+        ring_color = tuple(int(c*self.ring_brightness) for c in color)
+        self.pixels[0:_RING_PIXELS] = [ring_color] * _RING_PIXELS
         self.pixels.show()
 
     def _animate_stop(self):
@@ -105,7 +118,8 @@ class RGBButton():
 
     def pulseRing(self, color=(0,0,100), duration=2.5):
         self._animate_start()
-        self._animate_thread.ring_animation = { "type": AnimationType.PULSE, "color": color, "duration": duration }
+        ring_color = tuple(int(c*self.ring_brightness) for c in color)
+        self._animate_thread.ring_animation = { "type": AnimationType.PULSE, "color": ring_color, "duration": duration }
 
     def chaseRing(self, color=(0,0,255), duration=5):
         self._animate_start()
@@ -113,13 +127,15 @@ class RGBButton():
 
     def flashRing(self, color=(0,0,100), duration=2.5):
         self._animate_start()
-        self._animate_thread.ring_animation = { "type": AnimationType.FLASH, "color": color, "duration": duration }
+        ring_color = tuple(int(c*self.ring_brightness) for c in color)
+        self._animate_thread.ring_animation = { "type": AnimationType.FLASH, "color": ring_color, "duration": duration }
 
     def stopRing(self):
-        if self._animate_thread.button_animation is None:
-            self._animate_stop()
-        else:
-            self._animate_thread.ring_animation = None
+        if self._animate_thread is not None:
+            if self._animate_thread.button_animation is None:
+                self._animate_stop()
+            else:
+                self._animate_thread.ring_animation = None
         self.pixels[0:_RING_PIXELS] = [Color.OFF] * _RING_PIXELS
         self.pixels.show()
 
@@ -189,7 +205,7 @@ class AnimateThread(threading.Thread):
 
     def _animate_button(self, pixels):
         if self.button_animation is None:
-            return [Color.OFF] * len(pixels)
+            return [self.pixels[_RING_PIXELS]] * len(pixels)
 
         (self._button_frame, pixels) = self._animate(
             num_pixels=len(pixels), 
@@ -202,7 +218,7 @@ class AnimateThread(threading.Thread):
 
     def _animate_ring(self, pixels):
         if self.ring_animation is None:
-            return [Color.OFF] * len(pixels)
+            return [self.pixels[0]] * len(pixels)
 
         (self._ring_frame, pixels) = self._animate(
             num_pixels=len(pixels), 
