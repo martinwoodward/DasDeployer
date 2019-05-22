@@ -3,14 +3,24 @@
 # And copy to local_settings.py
 
 # The Azure DevOps Organization to connect to
-ORG_URL = "https://dev.azure.com/azuredevopsexamples"
+ORG_URL = 'https://dev.azure.com/azuredevopsexamples'
 
 # The PAT for a user that has permission to approve releases
-PAT = "---INSERT-YOUR-PAT-HERE-----"
+PAT = '---INSERT-YOUR-PAT-HERE-----'
 
 # The project were the build and release definitions live
-PROJECT = "website"
+PROJECT = 'website'
 
 # The build definition ID that should be checked for build status
 BUILD_PIPELINE_ID = 23
 
+# The relesse ID that should be checked for release status
+RELEASE_ID = 1
+
+# Assign environments to each toggle switch
+# provide name and environment id
+ENVIRONMENTS = {
+    'Dev': {'name':'Dev', 'id' : 1},
+    'Stage': {'name':'Staging', 'id' : 2},
+    'Prod': {'name':'Prod', 'id' : 3}
+}
