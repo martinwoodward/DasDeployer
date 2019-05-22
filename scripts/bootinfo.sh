@@ -12,7 +12,7 @@
 
 case "$1" in
   start)
-    /home/pi/DasDeployer/dasdeployer/writelcd.py '>>> Das Deployer <<<Initialising...'
+    /home/pi/DasDeployer/dasdeployer/writelcd.py '>>> Das Deployer <<<Obtaining IP...'
     ;;
   stop)
     /home/pi/DasDeployer/dasdeployer/writelcd.py --displayOff 'Safe to power off'

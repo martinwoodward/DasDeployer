@@ -144,7 +144,7 @@ def run_diagnostics():
     lcd.message = TITLE + \
         "\nIP:  " + get_ip() + \
         "\nCPU: " + str(round(cpu.temperature)) + chr(0xDF) + \
-        "\nOff  Reset Demo Back" 
+        "\nOff        Demo Back" 
     switchLight.on()
     
     switch.red.wait_for_release()
@@ -152,13 +152,11 @@ def run_diagnostics():
     
     switch.red.when_pressed = shutdown
     switch.orange.when_pressed = reboot
-    switch.green.when_pressed = demo
-
+ 
     switch.blue.wait_for_press()
 
     switchLight.off()
     
-    switch.green.when_pressed = None
     switch.orange.when_pressed = None
     switch.red.when_pressed = None
     switch.red.when_held = run_diagnostics
