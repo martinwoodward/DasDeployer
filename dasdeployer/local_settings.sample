@@ -20,7 +20,8 @@ RELEASE_ID = 1
 # Assign environments to each toggle switch
 # provide name and environment id
 ENVIRONMENTS = {
-    'Dev': {'name':'Dev', 'id' : 1},
-    'Stage': {'name':'Staging', 'id' : 2},
-    'Prod': {'name':'Prod', 'id' : 3}
+    'Dev': 1,
+    'Stage': 2,
+    'Prod': 3
 }
+

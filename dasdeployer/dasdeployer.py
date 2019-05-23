@@ -7,6 +7,9 @@ from time import sleep
 from lcd import LCD_HD44780_I2C
 from rgb import Color, RGBButton
 from datetime import datetime
+from pipelines import Pipelines, QueryResult, QueryResultStatus
+from pprint import pprint
+
 
 import socket
 
@@ -26,6 +29,7 @@ rgbmatrix = RGBButton()
 bigButton = Button(17)
 buildNumber = ""
 activeEnvironment = "Dev"
+last_result = QueryResult()
 
 ## Nifty get_ip function from Jamieson Becker https://stackoverflow.com/a/28950776
 def get_ip():
@@ -162,20 +166,99 @@ def run_diagnostics():
     switch.red.when_held = run_diagnostics
     lcd.message = TITLE
 
+def get_build_color(build_result):
+    if (build_result == "succeeded"):
+        return Color.GREEN
+    elif (build_result == "failed"):
+        return Color.RED
+    elif (build_result == "canceled"):
+        return Color.WHITE
+    elif (build_result == "partiallySucceeded"):
+        return Color.YELLOW
+    return Color.OFF
+
+def deploy_in_progress(result, environment):
+    rgbmatrix.fillButton(Color.WHITE)
+    rgbmatrix.chaseRing(Color.BLUE, 1)
+    lcd.message = "{}\n{}\n{}\nDeploying to {}...".format(TITLE,
+        result.latest_build.definition.name,
+        result.dev_release.name,
+        environment)
+
+def clear_last_result():
+    print("Clear last")
+    last_result = QueryResult()
+
 def main():
     # Attach diagnotic menu to red button when held down
     switch.red.when_held = run_diagnostics
+
+    toggle.dev.when_pressed = clear_last_result
+    toggle.stage.when_pressed = clear_last_result
+    toggle.prod.when_pressed = clear_last_result
 
     # Quick init sequence to show all is well
     lcd.message = TITLE + "\n\n\n" + get_ip()
     leds.blink(0.5,0.5,0,0,2,True)
     rgbmatrix.pulseButton(Color.RED, 1)
     rgbmatrix.unicornRing(25)
-    sleep(4)
-    rgbmatrix.off()
-
     lcd.message = TITLE
 
-    pause()
+    # Set up build polling.
+    pipes = Pipelines()
+    last_result = pipes.get_status()
+    
+    # Display loop
+    while True:
+        result = pipes.get_status()
+
+        # Set the state of the approval toggle LED's
+        toggleLight.dev.value = result.enable_dev
+        toggleLight.stage.value = result.enable_stage
+        toggleLight.prod.value = result.enable_prod
+
+        if (result == last_result):
+            # Nothing has changed - lets just wait a bit
+            sleep(1)
+        
+        elif (toggle.dev.value == True):
+            # Dev switch is up
+            if (result.deploying_dev):
+                # Dev deployment in progress
+                deploy_in_progress(result, "Dev")
+                # Dev deployment in progress
+
+        elif (toggle.stage.value == True):
+            # Stage switch is up
+            if (result.deploying_stage):
+                # Stage deployment in progress
+                deploy_in_progress(result, "Staging")
+                # Stage deployment in progress
+
+        elif (toggle.prod.value == True):
+            # Prod switch is up
+            if (result.deploying_prod):
+                # Prod deployment in progress
+                deploy_in_progress(result, "Prod")
+                # Prod deployment in progress
+
+        elif (result.status == QueryResultStatus.BUILD_COMPLETE):
+            rgbmatrix.fillButton(get_build_color(result.last_build.result))
+            rgbmatrix.fillRing(Color.OFF)
+            lcd.message = "{}\n{}\nBuild {}\n{}.".format(TITLE,
+                result.latest_build.definition.name,
+                result.latest_build.build_number,
+                result.latest_build.result)
+
+        elif (result.status == QueryResultStatus.BUILD_IN_PROGRESS):
+            rgbmatrix.pulseButton(get_build_color(result.last_build.result), 1)
+            rgbmatrix.chaseRing(Color.BLUE, 1)
+            lcd.message = "{}\n{}\nBuild {}\nin progress...".format(TITLE,
+                result.latest_build.definition.name,
+                result.latest_build.build_number)
+        
+
+        last_result = result
+
 
 main()

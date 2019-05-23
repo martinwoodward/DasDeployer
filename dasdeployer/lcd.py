@@ -48,6 +48,8 @@ class LCD_HD44780_I2C:
         self.rows = rows
         self.address = address
 
+        self._last_message = ""
+
         # Initialise the bus
         self.bus = smbus.SMBus(1) # Modern Pi uses 1, old Pi's (Rev 1) use 0
 
@@ -99,6 +101,9 @@ class LCD_HD44780_I2C:
             for i in range(self.cols):
                 self._write8(ord(message[i]), True)
     
+    def resetMessage(self):
+        self.message(self._last_message)
+    
     @property
     def message(self):
         """Display a string of text on the character LCD.
@@ -107,7 +112,11 @@ class LCD_HD44780_I2C:
 
     @message.setter
     def message(self, message):
-        self._message = message
+        #if self._message == message:
+            # We've already displayed this.
+            #return
+        #self._last_message = self._message
+        self._message = message        
         row = 0
         col = 0
         line = ""
