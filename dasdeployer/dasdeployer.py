@@ -30,6 +30,7 @@ bigButton = Button(17)
 buildNumber = ""
 activeEnvironment = "Dev"
 last_result = QueryResult()
+pipes = None
 
 ## Nifty get_ip function from Jamieson Becker https://stackoverflow.com/a/28950776
 def get_ip():
@@ -67,6 +68,38 @@ def demo_stage_deploy():
     demo_deploy_question("Staging")
 def demo_prod_deploy():
     demo_deploy_question("Prod")
+
+def dev_deploy():
+    deploy_question("Dev")
+def stage_deploy():
+    deploy_question("Stage")
+def prod_deploy():
+    deploy_question("Prod")
+
+def deploy_question(environment):
+    lcd.message = "{}\nDeploy to {}?".format(TITLE,environment)
+    rgbmatrix.pulseButton(Color.RED, 1)
+    rgbmatrix.unicornRing(25)
+    bigButton.when_pressed = deploy
+
+def deploy():
+    # Find what we should be deploying.
+    deploy_env = None
+    if (toggle.prod.value):
+        deploy_env = "Prod"
+    elif (toggle.stage.value):
+        deploy_env = "Stage"
+    elif (toggle.dev.value):
+        deploy_env = "Dev"
+    else:
+        return
+    
+    pipes.get_approval(deploy_env)
+
+
+def toggle_release():
+    print("Toggle down")
+    last_result = QueryResult()
 
 def demo_deploy_question(location):
     activeEnvironment = location
@@ -148,7 +181,7 @@ def run_diagnostics():
     lcd.message = TITLE + \
         "\nIP:  " + get_ip() + \
         "\nCPU: " + str(round(cpu.temperature)) + chr(0xDF) + \
-        "\nOff        Demo Back" 
+        "\nOff  Reset      Back" 
     switchLight.on()
     
     switch.red.wait_for_release()
@@ -178,6 +211,7 @@ def get_build_color(build_result):
     return Color.OFF
 
 def deploy_in_progress(result, environment):
+    print("Deploy")
     rgbmatrix.fillButton(Color.WHITE)
     rgbmatrix.chaseRing(Color.BLUE, 1)
     lcd.message = "{}\n{}\n{}\nDeploying to {}...".format(TITLE,
@@ -193,9 +227,13 @@ def main():
     # Attach diagnotic menu to red button when held down
     switch.red.when_held = run_diagnostics
 
-    toggle.dev.when_pressed = clear_last_result
-    toggle.stage.when_pressed = clear_last_result
-    toggle.prod.when_pressed = clear_last_result
+    toggle.dev.when_pressed = dev_deploy
+    toggle.stage.when_pressed = stage_deploy
+    toggle.prod.when_pressed = prod_deploy
+
+    toggle.dev.when_released = toggle_release
+    toggle.stage.when_released = toggle_release
+    toggle.prod.when_released = toggle_release
 
     # Quick init sequence to show all is well
     lcd.message = TITLE + "\n\n\n" + get_ip()
