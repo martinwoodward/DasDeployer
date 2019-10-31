@@ -89,7 +89,6 @@ def deploy_question(environment):
 
 def deploy():
     # Find what we should be deploying.
-    print("Deploy button")
     deploy_env = None
     if (toggle.prod.value):
         deploy_env = "Prod"
@@ -99,13 +98,29 @@ def deploy():
         deploy_env = "Dev"
     else:
         return
-    print("Deploy Env:" + deploy_env)
-    pipes.approve(deploy_env)
+
+    # Approve it.
+    
+    bigButton.when_pressed = None
+    rgbmatrix.fillButton(Color.WHITE)
+    rgbmatrix.stopRing()
+    lcd.message = "{}Approving deployment to {}".format(TITLE,deploy_env)
+
+    releaseApproval = pipes.approve(deploy_env)
+    rgbmatrix.chaseRing(Color.BLUE, 1)
+    if releaseApproval is not None:
+        lcd.message = "{}{}\napproved to {}".format(TITLE,releaseApproval.release.name,releaseApproval.release_environment.name)
+
 
 
 def toggle_release():
     print("Toggle down")
-    last_result = QueryResult()
+    if last_result is None:
+        print("No last result available")
+        return
+    else:
+        update_display(last_result)
+
 
 def demo_deploy_question(location):
     activeEnvironment = location
@@ -250,6 +265,7 @@ def main():
 
     # Set up build polling.
     # pipes = Pipelines()
+    global last_result
     last_result = pipes.get_status()
     
     # Display loop
@@ -264,44 +280,46 @@ def main():
         if (result == last_result):
             # Nothing has changed - lets just wait a bit
             sleep(1)
-        
-        elif (toggle.dev.value == True):
-            # Dev switch is up
-            if (result.deploying_dev):
-                # Dev deployment in progress
-                deploy_in_progress(result, "Dev")
-                # Dev deployment in progress
+        else:
+            update_display(result)
+            last_result = result
 
-        elif (toggle.stage.value == True):
-            # Stage switch is up
-            if (result.deploying_stage):
-                # Stage deployment in progress
-                deploy_in_progress(result, "Staging")
-                # Stage deployment in progress
+def update_display(result):
+    if (toggle.dev.value == True):
+        # Dev switch is up
+        if (result.deploying_dev):
+            # Dev deployment in progress
+            deploy_in_progress(result, "Dev")
 
-        elif (toggle.prod.value == True):
-            # Prod switch is up
-            if (result.deploying_prod):
-                # Prod deployment in progress
-                deploy_in_progress(result, "Prod")
-                # Prod deployment in progress
+    elif (toggle.stage.value == True):
+        # Stage switch is up
+        if (result.deploying_stage):
+            # Stage deployment in progress
+            deploy_in_progress(result, "Staging")
 
-        elif (result.status == QueryResultStatus.BUILD_COMPLETE):
-            rgbmatrix.fillButton(get_build_color(result.last_build.result))
-            rgbmatrix.fillRing(Color.OFF)
-            lcd.message = "{}\n{}\nBuild {}\n{}.".format(TITLE,
-                result.latest_build.definition.name,
-                result.latest_build.build_number,
-                result.latest_build.result)
+    elif (toggle.prod.value == True):
+        # Prod switch is up
+        if (result.deploying_prod):
+            # Prod deployment in progress
+            deploy_in_progress(result, "Prod")
 
-        elif (result.status == QueryResultStatus.BUILD_IN_PROGRESS):
-            rgbmatrix.pulseButton(get_build_color(result.last_build.result), 1)
-            rgbmatrix.chaseRing(Color.BLUE, 1)
-            lcd.message = "{}\n{}\nBuild {}\nin progress...".format(TITLE,
-                result.latest_build.definition.name,
-                result.latest_build.build_number)
-        
+    elif (result.status == QueryResultStatus.BUILD_COMPLETE):
+        rgbmatrix.fillButton(get_build_color(result.last_build.result))
+        rgbmatrix.fillRing(Color.OFF)
+        lcd.message = "{}\n{}\nBuild {}\n{}.".format(TITLE,
+            result.latest_build.definition.name,
+            result.latest_build.build_number,
+            result.latest_build.result)
 
-        last_result = result
+    elif (result.status == QueryResultStatus.BUILD_IN_PROGRESS):
+        print("Build In Progress")
+        rgbmatrix.pulseButton(get_build_color(result.last_build.result), 1)
+        rgbmatrix.chaseRing(Color.BLUE, 1)
+        lcd.message = "{}\n{}\nBuild {}\nin progress...".format(TITLE,
+            result.latest_build.definition.name,
+            result.latest_build.build_number)
+
+    print(result.status)
+    
 
 main()

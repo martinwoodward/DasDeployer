@@ -44,6 +44,7 @@ class Pipelines():
         connection = Connection(base_url=ORG_URL, creds=BasicAuthentication('', PAT))
         rm_client = connection.clients.get_release_client()
         approvals = rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")
+        releaseApproval = None
         for a in approvals:
             # print(a.release.name + " awaiting approval to " + a.release_environment.name)
             if approve_env == a.release_environment.name:
@@ -53,6 +54,7 @@ class Pipelines():
                 approval.comments = "Approved by DasDeployer big button"
                 releaseApproval = rm_client.update_release_approval(approval, PROJECT, approval.id)
                 print("Approved " + releaseApproval.release.name + " to " + releaseApproval.release_environment.name)
+        return releaseApproval
 
 
 
@@ -128,7 +130,6 @@ class PollStatusThread(threading.Thread):
                 #if deploy_env:
                 #    print(deployments[0])
                 #    print(e + ": " + deployments[0].release.name + " - " + deployments[0].deployment_status + " q:" + deployments[0].queued_on.strftime("%Y-%m-%d %H:%M") )
-
 
             if (self._last_result.status != result.status or 
                  (self._last_result.latest_build is not None and 
