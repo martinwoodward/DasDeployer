@@ -27,10 +27,15 @@ leds = LEDBoard(switchLight, toggleLight)
 lcd = LCD_HD44780_I2C()
 rgbmatrix = RGBButton()
 bigButton = Button(17)
+
+global pipes
+global buildNumber
+global activeEnvironment
+global last_result
+pipes = None
 buildNumber = ""
 activeEnvironment = "Dev"
 last_result = QueryResult()
-pipes = None
 
 ## Nifty get_ip function from Jamieson Becker https://stackoverflow.com/a/28950776
 def get_ip():
