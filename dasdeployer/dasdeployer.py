@@ -164,8 +164,7 @@ def deploy_in_progress(result, environment):
         environment)
 
 def update_display(result):
-
-    if results is None:
+    if result is None:
         return
 
     elif (toggle.dev.value == True):
