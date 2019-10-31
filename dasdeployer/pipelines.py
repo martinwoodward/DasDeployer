@@ -37,6 +37,25 @@ class Pipelines():
             self._poll_thread = PollStatusThread(interval=10)
             self._poll_thread.start()
         return self._poll_thread._last_result
+    
+    def approve(self, approve_env):
+        print("Approve env:" + approve_env)
+        # Get Release Client
+        connection = Connection(base_url=ORG_URL, creds=BasicAuthentication('', PAT))
+        rm_client = connection.clients.get_release_client()
+        approvals = rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")
+        for a in approvals:
+            # print(a.release.name + " awaiting approval to " + a.release_environment.name)
+            if approve_env == a.release_environment.name:
+                # Approve this environment
+                approval = a
+                approval.status = "approved"
+                approval.comments = "Approved by DasDeployer big button"
+                releaseApproval = rm_client.update_release_approval(approval, PROJECT, approval.id)
+                print("Approved " + releaseApproval.release.name + " to " + releaseApproval.release_environment.name)
+
+
+
 
 class PollStatusThread(threading.Thread):
     def __init__(self, interval=10):
@@ -90,9 +109,9 @@ class PollStatusThread(threading.Thread):
             # First see if any of the environments are deploying
             for e in ENVIRONMENTS:
                 deployments = self._rm_client.get_deployments(PROJECT, definition_id=RELEASE_ID, definition_environment_id=ENVIRONMENTS[e], top=1, deployment_status="all")
+                deploy_env = (deployments[0].deployment_status == "inProgress" or deployments[0].operation_status == "QueuedForAgent")
                 enable_env = (deployments[0].deployment_status == "inProgress" or deployments[0].deployment_status == "notDeployed")
-                deploy_env = (deployments[0].deployment_status == "inProgress")
-
+                
                 if e == 'Dev':
                     result.enable_dev = enable_env
                     result.deploying_dev = deploy_env
@@ -105,7 +124,10 @@ class PollStatusThread(threading.Thread):
                     result.enable_prod = enable_env
                     result.deploying_prod = deploy_env
                     result.prod_release = deployments[0].release  
-                # print(e + ": " + deployments[0].release.name + " - " + deployments[0].deployment_status )
+                
+                #if deploy_env:
+                #    print(deployments[0])
+                #    print(e + ": " + deployments[0].release.name + " - " + deployments[0].deployment_status + " q:" + deployments[0].queued_on.strftime("%Y-%m-%d %H:%M") )
 
 
             if (self._last_result.status != result.status or 

@@ -32,7 +32,7 @@ global pipes
 global buildNumber
 global activeEnvironment
 global last_result
-pipes = None
+pipes = Pipelines()
 buildNumber = ""
 activeEnvironment = "Dev"
 last_result = QueryResult()
@@ -89,17 +89,18 @@ def deploy_question(environment):
 
 def deploy():
     # Find what we should be deploying.
+    print("Deploy button")
     deploy_env = None
     if (toggle.prod.value):
         deploy_env = "Prod"
     elif (toggle.stage.value):
-        deploy_env = "Stage"
+        deploy_env = "Staging"
     elif (toggle.dev.value):
         deploy_env = "Dev"
     else:
         return
-    
-    pipes.get_approval(deploy_env)
+    print("Deploy Env:" + deploy_env)
+    pipes.approve(deploy_env)
 
 
 def toggle_release():
@@ -248,7 +249,7 @@ def main():
     lcd.message = TITLE
 
     # Set up build polling.
-    pipes = Pipelines()
+    # pipes = Pipelines()
     last_result = pipes.get_status()
     
     # Display loop
@@ -302,6 +303,5 @@ def main():
         
 
         last_result = result
-
 
 main()
