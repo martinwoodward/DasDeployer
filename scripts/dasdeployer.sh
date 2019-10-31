@@ -28,6 +28,7 @@ DAEMON_USER=root
 # The process ID of the script when it runs is stored here:
 PIDFILE=/var/run/$DAEMON_NAME.pid
 
+# shellcheck disable=SC1091
 . /lib/lsb/init-functions
 
 do_start () {
@@ -44,6 +45,7 @@ do_stop () {
 case "$1" in
 
     start|stop)
+        # shellcheck disable=SC2086
         do_${1}
         ;;
 
