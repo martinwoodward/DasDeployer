@@ -4,6 +4,8 @@
 
 Raspberry Pi powered manual release approval gate for Azure Pipelines. Mit viele blinkenlighten.
 
+![DasDeployer](images/dasdeployer-hero.png?raw=true "Das Deployer")
+
 More details coming soon.
 
 ## Component List
