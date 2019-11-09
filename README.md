@@ -6,7 +6,9 @@ Raspberry Pi powered manual release approval gate for Azure Pipelines. Mit viele
 
 ![DasDeployer](images/dasdeployer-hero.png?raw=true "Das Deployer")
 
-More details coming soon.
+I did a short talk about this project at Microsoft Ignite 2019.
+ - [Video](https://myignite.techcommunity.microsoft.com/sessions/83984)
+ - [Slides](https://1drv.ms/p/s!AnoZDWDiiqDHxsEOiek9n2gWs0enNA)
 
 ## Component List
  - Gun Metal Grey Aluminium Flight Case (340 x 240 x 120mm) [[UK]](https://amzn.to/2v9PrQS) [[US Similar Size]](https://amzn.to/34DP5BR)
