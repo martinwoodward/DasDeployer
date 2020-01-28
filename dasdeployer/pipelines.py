@@ -172,11 +172,11 @@ def pipemain():
     # See what environments we have and the status of their latest deployments
     release = rm_client.get_release_definition(PROJECT, RELEASE_ID)
     for e in release.environments:
-        deployments = rm_client.get_deployments(PROJECT, definition_id=RELEASE_ID, definition_environment_id=e.id, top=1, deployment_status="all")
+        deployments = (rm_client.get_deployments(PROJECT, definition_id=RELEASE_ID, definition_environment_id=e.id, top=1, deployment_status="all")).value
         print(str(e.id) + " - " + e.name + ": " + deployments[0].release.name + " - " + deployments[0].deployment_status )
 
     # Look up pending approvals
-    approvals = rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")
+    approvals = (rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")).value
 
     for a in approvals:
         print(a.release.name + " awaiting approval to " + a.release_environment.name)
