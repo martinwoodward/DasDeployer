@@ -1,5 +1,3 @@
-[![Build Status](https://dev.azure.com/martin/DasDeployer/_apis/build/status/martinwoodward.DasDeployer?branchName=master&label=DasBuild)](https://dev.azure.com/martin/DasDeployer/_build/latest?definitionId=43&branchName=master)
-
 # DasDeployer
 
 Raspberry Pi powered manual release approval gate for Azure Pipelines. Mit viele blinkenlighten.
@@ -7,7 +5,7 @@ Raspberry Pi powered manual release approval gate for Azure Pipelines. Mit viele
 ![DasDeployer](images/dasdeployer-hero.png?raw=true "Das Deployer")
 
 I did a short talk about this project at Microsoft Ignite 2019.
- - [Video](https://myignite.techcommunity.microsoft.com/sessions/83984)
+ - [Video](https://youtu.be/BCh59AqFrTA)
  - [Slides](https://1drv.ms/p/s!AnoZDWDiiqDHxsEOiek9n2gWs0enNA)
 
 ## Component List
