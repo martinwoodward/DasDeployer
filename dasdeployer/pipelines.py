@@ -1,4 +1,4 @@
-try:
+﻿try:
     from local_settings import *
 except ImportError:
     pass
@@ -37,13 +37,13 @@ class Pipelines():
             self._poll_thread = PollStatusThread(interval=10)
             self._poll_thread.start()
         return self._poll_thread._last_result
-    
+
     def approve(self, approve_env):
         print("Approve env:" + approve_env)
         # Get Release Client
         connection = Connection(base_url=ORG_URL, creds=BasicAuthentication('', PAT))
         rm_client = connection.clients.get_release_client()
-        approvals = rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")
+        approvals = (rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")).value
         releaseApproval = None
         for a in approvals:
             # print(a.release.name + " awaiting approval to " + a.release_environment.name)
@@ -64,7 +64,7 @@ class PollStatusThread(threading.Thread):
         super(PollStatusThread, self).__init__()
         self.daemon = True
         self.stoprequest = threading.Event()
-        
+
         self.regularInterval = interval
         self.delay = interval
 
@@ -110,10 +110,10 @@ class PollStatusThread(threading.Thread):
 
             # First see if any of the environments are deploying
             for e in ENVIRONMENTS:
-                deployments = self._rm_client.get_deployments(PROJECT, definition_id=RELEASE_ID, definition_environment_id=ENVIRONMENTS[e], top=1, deployment_status="all")
+                deployments = (self._rm_client.get_deployments(PROJECT, definition_id=RELEASE_ID, definition_environment_id=ENVIRONMENTS[e], top=1, deployment_status="all")).value
                 deploy_env = (deployments[0].deployment_status == "inProgress" or deployments[0].operation_status == "QueuedForAgent")
                 enable_env = (deployments[0].deployment_status == "inProgress" or deployments[0].deployment_status == "notDeployed")
-                
+
                 if e == 'Dev':
                     result.enable_dev = enable_env
                     result.deploying_dev = deploy_env
@@ -125,14 +125,14 @@ class PollStatusThread(threading.Thread):
                 elif e == 'Prod':
                     result.enable_prod = enable_env
                     result.deploying_prod = deploy_env
-                    result.prod_release = deployments[0].release  
-                
+                    result.prod_release = deployments[0].release
+
                 #if deploy_env:
                 #    print(deployments[0])
                 #    print(e + ": " + deployments[0].release.name + " - " + deployments[0].deployment_status + " q:" + deployments[0].queued_on.strftime("%Y-%m-%d %H:%M") )
 
-            if (self._last_result.status != result.status or 
-                 (self._last_result.latest_build is not None and 
+            if (self._last_result.status != result.status or
+                 (self._last_result.latest_build is not None and
                   self._last_result.latest_build.last_changed_date != result.latest_build.last_changed_date
                  ) or
                  self._last_result.enable_dev != result.enable_dev or
@@ -172,11 +172,11 @@ def pipemain():
     # See what environments we have and the status of their latest deployments
     release = rm_client.get_release_definition(PROJECT, RELEASE_ID)
     for e in release.environments:
-        deployments = rm_client.get_deployments(PROJECT, definition_id=RELEASE_ID, definition_environment_id=e.id, top=1, deployment_status="all")
+        deployments = (rm_client.get_deployments(PROJECT, definition_id=RELEASE_ID, definition_environment_id=e.id, top=1, deployment_status="all")).value
         print(str(e.id) + " - " + e.name + ": " + deployments[0].release.name + " - " + deployments[0].deployment_status )
 
     # Look up pending approvals
-    approvals = rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")
+    approvals = (rm_client.get_approvals(project=PROJECT, type_filter="preDeploy")).value
 
     for a in approvals:
         print(a.release.name + " awaiting approval to " + a.release_environment.name)
@@ -188,4 +188,3 @@ def pipemain():
         approval.comments = "Approved by DasDeployer"
         releaseApproval = rm_client.update_release_approval(approval, PROJECT, approval.id)
         print("Approved " + releaseApproval.release.name + " to " + releaseApproval.release_environment.name)
-
