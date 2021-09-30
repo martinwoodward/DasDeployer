@@ -66,7 +66,7 @@ TODO
 ## Software Installation
 1. Download the latest Raspian image to a Micro-SD Card, create a file in the root of the image called 'ssh' to enable ssh access in a headless environment. SSH to server and do apt-get update/upgrade etc
 2. Change the password for the default pi user, everything else assumes you are running as that user.
-3. Enable i2c using raspi-config
+3. Enable i2c using raspi-config 
 4. Install pre-requisites (TODO: list these but ideally script out this part)
 5. git clone this repo into the /home/pi directory.
 
